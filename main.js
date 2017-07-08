@@ -52,11 +52,13 @@ class Rect {
     this.x = x;
     this.y = y;
   }
+  // moves the player and takes the rotation in to account
   forwards(x) {
     this.x -= Math.sin(this.rotation  / 180 * Math.PI) * x;
     this.y -= Math.cos(this.rotation / 180 * Math.PI) * x;
     console.log(this.pos, this.rotation, x);
   }
+  // moves the player and takes the rotation in to account
   backwards(x) {
     this.forwards(-x);
   }
@@ -196,20 +198,7 @@ class Game extends Engine {
     // moves everything relative to the player
     this._context.translate(this._canvas.width/2,  this._canvas.height/2);
     this.drawPlayer(this.player);
-    this._context.beginPath();
-    this._context.moveTo(0,0);
-    this._context.lineTo(0,-300);
-    this._context.stroke();
-    this._context.closePath();
     this._context.rotate(this.player.rotation / 180 * Math.PI); // rotate everything except the player
-
-    this._context.beginPath();
-    this._context.moveTo(0,0);
-    this._context.lineTo(0, -150);
-    this._context.moveTo(0, -150);
-    this._context.lineTo(-150, -150);
-    this._context.stroke();
-    this._context.closePath();
 
     this.zombies.forEach(zombie => {
       this.drawSprite(zombie);
