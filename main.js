@@ -1,7 +1,12 @@
 class Vec {
   constructor(x, y) {
-    this.x = x;
-    this.y = y;
+    if (x instanceof Vec) {
+      this.x = x.x;
+      this.y = x.y;
+    } else {
+      this.x = x;
+      this.y = y;
+    }
   }
 }
 
@@ -79,8 +84,7 @@ class Engine {
 
   }
   simulate(dt) {
-    console.log(dt);
-    this.player.rotation += 1 * dt;
+
   }
   update(dt) {
     this._accumulator += dt;
@@ -113,14 +117,14 @@ class Game extends Engine{
 
   }
   simulate(dt) {
-    console.log(dt);
-    this.player.rotation += 1 * dt;
+    this.player.rotation += 90 * dt; // rotate 90 degrees per second
   }
 
   drawPlayer(player) {
     this._context.save();
-    this._context.rotate(player.rotation*Math.PI/180);
-    this.drawSprite(player);
+    this._context.translate(this._canvas.width/2, this._canvas.height/2);
+    this._context.rotate(player.rotation / 360 * Math.PI);
+    this._context.drawImage(player.img, 0 - player.size.x/2, 0 - player.size.y/2, player.size.x, player.size.y); // draws from the center
     this._context.restore();
   }
 }
