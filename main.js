@@ -52,11 +52,13 @@ class Rect {
     this.x = x;
     this.y = y;
   }
-  set forwards(x) {
-    this.pos.len;
+  forwards(x) {
+    this.x -= Math.sin(this.rotation  / 180 * Math.PI) * x;
+    this.y -= Math.cos(this.rotation / 180 * Math.PI) * x;
+    console.log(this.pos, this.rotation, x);
   }
-  set backwords(x) {
-
+  backwards(x) {
+    this.forwards(-x);
   }
 }
 
@@ -194,7 +196,21 @@ class Game extends Engine {
     // moves everything relative to the player
     this._context.translate(this._canvas.width/2,  this._canvas.height/2);
     this.drawPlayer(this.player);
-    this._context.rotate(this.player.rotation / 360 * Math.PI); // rotate everything except the player
+    this._context.beginPath();
+    this._context.moveTo(0,0);
+    this._context.lineTo(0,-300);
+    this._context.stroke();
+    this._context.closePath();
+    this._context.rotate(this.player.rotation / 180 * Math.PI); // rotate everything except the player
+
+    this._context.beginPath();
+    this._context.moveTo(0,0);
+    this._context.lineTo(0, -150);
+    this._context.moveTo(0, -150);
+    this._context.lineTo(-150, -150);
+    this._context.stroke();
+    this._context.closePath();
+
     this.zombies.forEach(zombie => {
       this.drawSprite(zombie);
     });
@@ -203,16 +219,16 @@ class Game extends Engine {
   }
   simulate(dt) {
     if (this.inputHandler.down.indexOf("down") != -1) {
-      this.player.y += 100 * dt;
+      this.player.backwards(100 * dt);
     }
     if (this.inputHandler.down.indexOf("up") != -1) {
-      this.player.y -= 100 * dt;
+      this.player.forwards(100 * dt);
     }
     if (this.inputHandler.down.indexOf("left") != -1) {
-      this.player.rotation -= 180 * dt;
+      this.player.rotation += 180 * dt;
     }
     if (this.inputHandler.down.indexOf("right") != -1) {
-      this.player.rotation += 180 * dt;
+      this.player.rotation -= 180 * dt;
     }
   }
 
@@ -222,7 +238,7 @@ class Game extends Engine {
 
   drawSprite(sprite) {
     // added an player offset
-    this._context.drawImage(sprite.img, sprite.pos.x - this.player.pos.x - sprite.size.x/2, sprite.pos.y - this.player.pos.y - sprite.size.y/2, sprite.size.x, sprite.size.y); // draws from the center
+    this._context.drawImage(sprite.img, sprite.pos.x - this.player.x - sprite.size.x/2, sprite.pos.y - this.player.y - sprite.size.y/2, sprite.size.x, sprite.size.y); // draws from the center
   }
 }
 
