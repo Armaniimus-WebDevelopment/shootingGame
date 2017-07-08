@@ -15,9 +15,21 @@ class Rect {
     this.pos = new Vec(x, y);
     this.size = new Vec(w, h);
   }
+  get left() {
+    return this.pos.x - this.size.x/2;
+  }
+  get right() {
+    return this.pos.x + this.size.x/2;
+  }
+  get top() {
+    return this.pos.y - this.size.y/2;
+  }
+  get bottom() {
+    return this.pos.y + this.size.y/2;
+  }
 }
 
-class Sprite extends Rect{
+class Sprite extends Rect {
   constructor(img, x, y, w, h) {
     super(x, y, w, h);
     this.rotation = 0;
@@ -95,14 +107,12 @@ class Engine {
   }
 
   drawSprite(sprite) {
-    if (sprite.img) {
-      this._context.drawImage(sprite.img, sprite.pos.x - sprite.size.x/2, sprite.pos.y - sprite.size.y/2, sprite.size.x, sprite.size.y); // draws from the center
-    }
+    this._context.drawImage(sprite.img, sprite.pos.x - sprite.size.x/2, sprite.pos.y - sprite.size.y/2, sprite.size.x, sprite.size.y); // draws from the center
   }
 
 }
 
-class Game extends Engine{
+class Game extends Engine {
   constructor(canvas) {
     super(canvas);
     this.player = new Player;
@@ -110,22 +120,33 @@ class Game extends Engine{
   }
 
   draw() {
+    // clear the screen
     this._context.fillStyle = "#eee";
     this._context.fillRect(0, 0, this._canvas.width, this._canvas.height);
 
-    this.drawPlayer(this.player);
+    this._context.save();
 
+    // moves everything relative to the player
+    this._context.translate(this._canvas.width/2,  this._canvas.height/2);
+    this.drawPlayer(this.player);
+    this._context.rotate(this.player.rotation / 360 * Math.PI); // rotate everything except the player
+    this.zombies.forEach(zombie => {
+      this.drawSprite(zombie);
+    });
+
+    this._context.restore();
   }
   simulate(dt) {
-    this.player.rotation += 90 * dt; // rotate 90 degrees per second
+    // this.player.rotation += 90 * dt; // rotate 90 degrees per second
   }
 
   drawPlayer(player) {
-    this._context.save();
-    this._context.translate(this._canvas.width/2, this._canvas.height/2);
-    this._context.rotate(player.rotation / 360 * Math.PI);
-    this._context.drawImage(player.img, 0 - player.size.x/2, 0 - player.size.y/2, player.size.x, player.size.y); // draws from the center
-    this._context.restore();
+    this._context.drawImage(player.img, 0 - this.player.size.x/2, 0 - this.player.size.y/2, player.size.x, player.size.y); // draws from the center
+  }
+
+  drawSprite(sprite) {
+    // added an player offset
+    this._context.drawImage(sprite.img, sprite.pos.x - this.player.pos.x - sprite.size.x/2, sprite.pos.y - this.player.pos.y - sprite.size.y/2, sprite.size.x, sprite.size.y); // draws from the center
   }
 }
 
