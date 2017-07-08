@@ -6,7 +6,7 @@ class Vec {
 }
 
 class Rect {
-  constructor(x, y, w, h) {
+  constructor(x = 0, y = 0, w = 0, h = 0) {
     this.pos = new Vec(x, y);
     this.size = new Vec(w, h);
   }
@@ -20,23 +20,37 @@ class Sprite extends Rect{
     } else {
       this.img = document.createElement("img");
       this.img.src = img;
-      this.img.onload = () => {
+      this.img.width = this.size.x;
+      this.img.height = this.size.y;
+      this.img.addEventListener("load", () => {
         this.img.width = this.size.x = this.size.x || this.img.naturalWidth;
         this.img.height = this.size.y = this.size.y || this.img.naturalHeight;
-      }
+      });
     }
   }
 }
 
 class Player extends Sprite {
   constructor() {
-    super("img/player.png", 0, 0);
+    super("img/player.png");
+
+    // scale it a bit
+    this.img.addEventListener("load", () => {
+      this.size.x *= 3;
+      this.size.y *= 3;
+    });
   }
 }
 
 class Zombie extends Sprite {
   constructor() {
-    super("img/zombie.png", 0, 0);
+    super("img/zombie.png");
+
+    // scale it a bit
+    this.img.addEventListener("load", () => {
+      this.size.x *= 3;
+      this.size.y *= 3;
+    });
   }
 }
 
@@ -44,6 +58,7 @@ class Game {
   constructor(canvas) {
     this._canvas = canvas;
     this._context = this._canvas.getContext("2d");
+    this._context.imageSmoothingEnabled = false;
     this.player = new Player;
     this.zombies = [new Zombie];
 
