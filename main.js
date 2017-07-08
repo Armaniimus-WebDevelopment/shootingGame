@@ -8,12 +8,21 @@ class Vec {
       this.y = y;
     }
   }
+  get len() {
+    return Math.sqrt(this.x * this.x + this.y * this.y);
+  }
+  set len(value) {
+    const fact = value / this.len;
+    this.x *= fact;
+    this.y *= fact;
+  }
 }
 
 class Rect {
   constructor(x = 0, y = 0, w = 0, h = 0) {
     this.pos = new Vec(x, y);
     this.size = new Vec(w, h);
+    this.rotation = 0;
   }
   get left() {
     return this.pos.x - this.size.x/2;
@@ -27,12 +36,33 @@ class Rect {
   get bottom() {
     return this.pos.y + this.size.y/2;
   }
+  get x() {
+    return this.pos.x;
+  }
+  get y() {
+    return this.pos.y;
+  }
+  set x(x) {
+    this.pos.x = x;
+  }
+  set y(y) {
+    this.pos.y = y;
+  }
+  move(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+  set forwards(x) {
+    this.pos.len;
+  }
+  set backwords(x) {
+
+  }
 }
 
 class Sprite extends Rect {
   constructor(img, x, y, w, h) {
     super(x, y, w, h);
-    this.rotation = 0;
     if (img instanceof Image) {
       this.img = img;
     } else {
@@ -77,7 +107,7 @@ class Engine {
     this._canvas = canvas;
     this._context = this._canvas.getContext("2d");
     this._context.imageSmoothingEnabled = false;
-
+    this.inputHandler = new InputHandler();
     this._accumulator = 0;
     this.step = 1/120;
     let lastTime;
@@ -112,6 +142,41 @@ class Engine {
 
 }
 
+class InputHandler {
+  constructor() {
+
+    this.keys = {
+      83: "down",
+      40: "down",
+      87: "up",
+      38: "up",
+      65: "left",
+      37: "left",
+      68: "right",
+      39: "right",
+      32: "space"
+    };
+
+    this.down = []; // stores the keys that are down(pressed)
+
+    document.addEventListener("keydown", e => {
+      this.keyDown(e);
+    });
+    document.addEventListener("keyup", e => {
+      this.keyUp(e);
+    });
+  }
+  keyDown(e) {
+    const key = this.keys[e.keyCode];
+    if (this.down.indexOf(key) === -1 && key) {
+      this.down.push(key);
+    }
+  }
+  keyUp(e) {
+    this.down.splice(this.down.indexOf(this.keys[e.keyCode]), 1);
+  }
+}
+
 class Game extends Engine {
   constructor(canvas) {
     super(canvas);
@@ -137,7 +202,18 @@ class Game extends Engine {
     this._context.restore();
   }
   simulate(dt) {
-    // this.player.rotation += 90 * dt; // rotate 90 degrees per second
+    if (this.inputHandler.down.indexOf("down") != -1) {
+      this.player.y += 100 * dt;
+    }
+    if (this.inputHandler.down.indexOf("up") != -1) {
+      this.player.y -= 100 * dt;
+    }
+    if (this.inputHandler.down.indexOf("left") != -1) {
+      this.player.rotation -= 180 * dt;
+    }
+    if (this.inputHandler.down.indexOf("right") != -1) {
+      this.player.rotation += 180 * dt;
+    }
   }
 
   drawPlayer(player) {
