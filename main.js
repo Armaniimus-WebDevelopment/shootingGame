@@ -15,6 +15,7 @@ class Rect {
 class Sprite extends Rect{
   constructor(img, x, y, w, h) {
     super(x, y, w, h);
+    this.rotation = 0;
     if (img instanceof Image) {
       this.img = img;
     } else {
@@ -54,21 +55,18 @@ class Zombie extends Sprite {
   }
 }
 
-class Game {
+class Engine {
   constructor(canvas) {
     this._canvas = canvas;
     this._context = this._canvas.getContext("2d");
     this._context.imageSmoothingEnabled = false;
-    this.player = new Player;
-    this.zombies = [new Zombie];
-
 
     this._accumulator = 0;
     this.step = 1/120;
     let lastTime;
     const timing = (millis) => {
       if (lastTime) {
-        // this.update((millis - lastTime) / 1000);
+        this.update((millis - lastTime) / 1000);
         this.draw();
       }
       lastTime = millis;
@@ -78,15 +76,11 @@ class Game {
   }
 
   draw() {
-    this._context.fillStyle = "#eee";
-    this._context.fillRect(0, 0, this._canvas.width, this._canvas.height);
-
-    this.drawSprite(this.player);
-
 
   }
   simulate(dt) {
-
+    console.log(dt);
+    this.player.rotation += 1 * dt;
   }
   update(dt) {
     this._accumulator += dt;
@@ -98,8 +92,36 @@ class Game {
 
   drawSprite(sprite) {
     if (sprite.img) {
-      this._context.drawImage(sprite.img, sprite.pos.x, sprite.pos.y, sprite.size.x, sprite.size.y);
+      this._context.drawImage(sprite.img, sprite.pos.x - sprite.size.x/2, sprite.pos.y - sprite.size.y/2, sprite.size.x, sprite.size.y); // draws from the center
     }
+  }
+
+}
+
+class Game extends Engine{
+  constructor(canvas) {
+    super(canvas);
+    this.player = new Player;
+    this.zombies = [new Zombie];
+  }
+
+  draw() {
+    this._context.fillStyle = "#eee";
+    this._context.fillRect(0, 0, this._canvas.width, this._canvas.height);
+
+    this.drawPlayer(this.player);
+
+  }
+  simulate(dt) {
+    console.log(dt);
+    this.player.rotation += 1 * dt;
+  }
+
+  drawPlayer(player) {
+    this._context.save();
+    this._context.rotate(player.rotation*Math.PI/180);
+    this.drawSprite(player);
+    this._context.restore();
   }
 }
 
