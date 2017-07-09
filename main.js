@@ -53,14 +53,13 @@ class Rect {
     this.y = y;
   }
   // moves the player and takes the rotation in to account
-  forwards(x) {
-    this.x -= Math.sin(this.rotation  / 180 * Math.PI) * x;
-    this.y -= Math.cos(this.rotation / 180 * Math.PI) * x;
-    console.log(this.pos, this.rotation, x);
+  forwards(speed) {
+    this.x -= Math.sin(this.rotation  / 180 * Math.PI) * speed;
+    this.y -= Math.cos(this.rotation / 180 * Math.PI) * speed;
   }
   // moves the player and takes the rotation in to account
-  backwards(x) {
-    this.forwards(-x);
+  backwards(speed) {
+    this.forwards(-speed);
   }
 }
 
@@ -82,9 +81,10 @@ class Sprite extends Rect {
   }
 }
 
-class Player extends Sprite {
-  constructor() {
-    super("img/player.png");
+class Entity extends Sprite {
+  constructor(img, health = 20) {
+    super(img);
+    this.health = health;
 
     // scale it a bit
     this.img.addEventListener("load", () => {
@@ -94,15 +94,15 @@ class Player extends Sprite {
   }
 }
 
-class Zombie extends Sprite {
+class Player extends Entity {
   constructor() {
-    super("img/zombie.png");
+    super("img/player.png");
+  }
+}
 
-    // scale it a bit
-    this.img.addEventListener("load", () => {
-      this.size.x *= 3;
-      this.size.y *= 3;
-    });
+class Zombie extends Entity {
+  constructor() {
+    super("img/zombie.png", 10);
   }
 }
 
@@ -112,6 +112,7 @@ class Engine {
     this._context = this._canvas.getContext("2d");
     this._context.imageSmoothingEnabled = false;
     this.inputHandler = new InputHandler();
+
     this._accumulator = 0;
     this.step = 1/120;
     let lastTime;
@@ -184,7 +185,7 @@ class InputHandler {
 class Game extends Engine {
   constructor(canvas) {
     super(canvas);
-    this.player = new Player;
+    this.players = [new Player];
     this.zombies = [new Zombie];
   }
 
@@ -197,8 +198,8 @@ class Game extends Engine {
 
     // moves everything relative to the player
     this._context.translate(this._canvas.width/2,  this._canvas.height/2);
-    this.drawPlayer(this.player);
-    this._context.rotate(this.player.rotation / 180 * Math.PI); // rotate everything except the player
+    this.drawPlayer(this.players[0]);
+    this._context.rotate(this.players[0].rotation / 180 * Math.PI); // rotate everything except the player
 
     this.zombies.forEach(zombie => {
       this.drawSprite(zombie);
@@ -208,26 +209,29 @@ class Game extends Engine {
   }
   simulate(dt) {
     if (this.inputHandler.down.indexOf("down") != -1) {
-      this.player.backwards(100 * dt);
+      this.players[0].backwards(150 * dt);
     }
     if (this.inputHandler.down.indexOf("up") != -1) {
-      this.player.forwards(100 * dt);
+      this.players[0].forwards(150 * dt);
     }
     if (this.inputHandler.down.indexOf("left") != -1) {
-      this.player.rotation += 180 * dt;
+      this.players[0].rotation += 180 * dt;
     }
     if (this.inputHandler.down.indexOf("right") != -1) {
-      this.player.rotation -= 180 * dt;
+      this.players[0].rotation -= 180 * dt;
     }
   }
 
   drawPlayer(player) {
-    this._context.drawImage(player.img, 0 - this.player.size.x/2, 0 - this.player.size.y/2, player.size.x, player.size.y); // draws from the center
+    this._context.drawImage(player.img, 0 - this.players[0].size.x/2, 0 - this.players[0].size.y/2, player.size.x, player.size.y); // draws from the center
   }
 
   drawSprite(sprite) {
-    // added an player offset
-    this._context.drawImage(sprite.img, sprite.pos.x - this.player.x - sprite.size.x/2, sprite.pos.y - this.player.y - sprite.size.y/2, sprite.size.x, sprite.size.y); // draws from the center
+    this._context.save();
+    this._context.translate(sprite.pos.x - this.players[0].pos.x, sprite.pos.y - this.players[0].pos.y);
+    this._context.rotate(sprite.rotation / 180 * Math.PI);
+    this._context.drawImage(sprite.img, 0 - sprite.size.x/2, 0 - sprite.size.y/2, sprite.size.x, sprite.size.y); // draws from the center
+    this._context.restore();
   }
 }
 
