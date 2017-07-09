@@ -185,6 +185,7 @@ class InputHandler {
 class Game extends Engine {
   constructor(canvas) {
     super(canvas);
+    this.camAngle = 0;
     this.players = [new Player];
     this.zombies = [new Zombie];
   }
@@ -199,15 +200,40 @@ class Game extends Engine {
     // moves everything relative to the player
     this._context.translate(this._canvas.width/2,  this._canvas.height/2);
     this.drawPlayer(this.players[0]);
-    this._context.rotate(this.players[0].rotation / 180 * Math.PI); // rotate everything except the player
+    this._context.rotate(this.camAngle / 180 * Math.PI); // rotate everything except the player
+
+    this.players.forEach((player, index) => {
+      if (index != 0) {
+        this.drawSprite(player); // draw each player except the first one
+      }
+    });
 
     this.zombies.forEach(zombie => {
-      this.drawSprite(zombie);
+      this.drawSprite(zombie); // draw each zombie
     });
 
     this._context.restore();
   }
+
+  drawPlayer(player) {
+    this._context.save();
+    this._context.rotate((this.camAngle - player.rotation) / 180 * Math.PI);
+    this._context.drawImage(player.img, 0 - this.players[0].size.x/2, 0 - this.players[0].size.y/2, player.size.x, player.size.y); // draws from the center
+    this._context.restore();
+  }
+
+  drawSprite(sprite) {
+    this._context.save();
+    this._context.translate(sprite.pos.x - this.players[0].pos.x, sprite.pos.y - this.players[0].pos.y);
+    this._context.rotate(sprite.rotation / 180 * Math.PI);
+    this._context.drawImage(sprite.img, 0 - sprite.size.x/2, 0 - sprite.size.y/2, sprite.size.x, sprite.size.y); // draws from the center
+    this._context.restore();
+  }
+
   simulate(dt) {
+
+    this.camAngle += (this.players[0].rotation - this.camAngle) * 15 * dt; // adds an smooth rotation
+
     if (this.inputHandler.down.indexOf("down") != -1) {
       this.players[0].backwards(150 * dt);
     }
@@ -222,17 +248,6 @@ class Game extends Engine {
     }
   }
 
-  drawPlayer(player) {
-    this._context.drawImage(player.img, 0 - this.players[0].size.x/2, 0 - this.players[0].size.y/2, player.size.x, player.size.y); // draws from the center
-  }
-
-  drawSprite(sprite) {
-    this._context.save();
-    this._context.translate(sprite.pos.x - this.players[0].pos.x, sprite.pos.y - this.players[0].pos.y);
-    this._context.rotate(sprite.rotation / 180 * Math.PI);
-    this._context.drawImage(sprite.img, 0 - sprite.size.x/2, 0 - sprite.size.y/2, sprite.size.x, sprite.size.y); // draws from the center
-    this._context.restore();
-  }
 }
 
 const canvas = document.getElementById("canvas");
