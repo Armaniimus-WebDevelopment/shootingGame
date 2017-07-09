@@ -16,6 +16,9 @@ class Vec {
     this.x *= fact;
     this.y *= fact;
   }
+  distance(vec) {
+    return new Vec(this.x - vec.x, this.y - vec.y);
+  }
 }
 
 class Rect {
@@ -54,7 +57,7 @@ class Rect {
   }
   // moves the player and takes the rotation in to account
   forwards(speed) {
-    this.x -= Math.sin(this.rotation  / 180 * Math.PI) * speed;
+    this.x -= Math.sin(this.rotation / 180 * Math.PI) * speed;
     this.y -= Math.cos(this.rotation / 180 * Math.PI) * speed;
   }
   // moves the player and takes the rotation in to account
@@ -64,8 +67,9 @@ class Rect {
 }
 
 class Sprite extends Rect {
-  constructor(img, x, y, w, h) {
+  constructor(img, x, y, w, h, middleX, middleY) {
     super(x, y, w, h);
+    this.middle = new Vec(middleX, middleY); // TODO: render it differently with this, use as offset in drawing
     if (img instanceof Image) {
       this.img = img;
     } else {
@@ -91,6 +95,11 @@ class Entity extends Sprite {
       this.size.x *= 3;
       this.size.y *= 3;
     });
+  }
+  lookAt(entity, dt = 1/120, speed) {
+    const dist = this.pos.distance(entity.pos);
+    const targetRotation = (Math.atan2(dist.y, dist.x) * 180 / Math.PI - 90);
+    this.rotation += (targetRotation - this.rotation) * dt * speed;
   }
 }
 
@@ -225,14 +234,28 @@ class Game extends Engine {
   drawSprite(sprite) {
     this._context.save();
     this._context.translate(sprite.pos.x - this.players[0].pos.x, sprite.pos.y - this.players[0].pos.y);
+    this._context.beginPath();
+    this._context.moveTo(0,0);
+    this._context.lineTo(0,-150);
+    this._context.stroke();
+    this._context.closePath();
     this._context.rotate(sprite.rotation / 180 * Math.PI);
+    this._context.beginPath();
+    this._context.moveTo(0,0);
+    this._context.lineTo(0,-300);
+    this._context.stroke();
+    this._context.closePath();
     this._context.drawImage(sprite.img, 0 - sprite.size.x/2, 0 - sprite.size.y/2, sprite.size.x, sprite.size.y); // draws from the center
     this._context.restore();
   }
 
   simulate(dt) {
-
     this.camAngle += (this.players[0].rotation - this.camAngle) * 15 * dt; // adds an smooth rotation
+
+    this.zombies.forEach(zombie => {
+      zombie.lookAt(this.players[0], dt, 1);
+      // zombie.forwards(50 * dt);
+    });
 
     if (this.inputHandler.down.indexOf("down") != -1) {
       this.players[0].backwards(150 * dt);
@@ -251,4 +274,6 @@ class Game extends Engine {
 }
 
 const canvas = document.getElementById("canvas");
+canvas.width = document.body.clientWidth;
+canvas.height = document.body.clientHeight - 5;
 const game = new Game(canvas);
