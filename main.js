@@ -55,9 +55,9 @@ class Rect {
     this.x = x;
     this.y = y;
   }
-  // moves the player and takes the rotation in to account
+  // moves the rect and takes the rotation in to account
   forwards(speed) {
-    this.x -= Math.sin(this.rotation / 180 * Math.PI) * speed;
+    this.x += Math.sin(this.rotation / 180 * Math.PI) * speed;
     this.y -= Math.cos(this.rotation / 180 * Math.PI) * speed;
   }
   // moves the player and takes the rotation in to account
@@ -96,16 +96,21 @@ class Entity extends Sprite {
       this.size.y *= 3;
     });
   }
-  lookAt(entity, dt = 1/120, speed) {
+  lookAt(entity, speed) {
     const dist = this.pos.distance(entity.pos);
     const targetRotation = (Math.atan2(dist.y, dist.x) * 180 / Math.PI - 90);
-    this.rotation += (targetRotation - this.rotation) * dt * speed;
+    this.rotation += (targetRotation - this.rotation) * speed;
   }
 }
 
 class Player extends Entity {
   constructor() {
     super("img/player.png");
+  }
+  // moves the player and takes the rotation in to account
+  forwards(speed) {
+    this.x -= Math.sin(this.rotation / 180 * Math.PI) * speed;
+    this.y -= Math.cos(this.rotation / 180 * Math.PI) * speed;
   }
 }
 
@@ -196,6 +201,7 @@ class Game extends Engine {
     super(canvas);
     this.camAngle = 0;
     this.players = [new Player];
+    this.players[0].x, this.players[0].y = -250;
     this.zombies = [new Zombie];
   }
 
@@ -253,8 +259,8 @@ class Game extends Engine {
     this.camAngle += (this.players[0].rotation - this.camAngle) * 15 * dt; // adds an smooth rotation
 
     this.zombies.forEach(zombie => {
-      zombie.lookAt(this.players[0], dt, 1);
-      // zombie.forwards(50 * dt);
+      zombie.lookAt(this.players[0], 1 * dt);
+      zombie.forwards(100 * dt);
     });
 
     if (this.inputHandler.down.indexOf("down") != -1) {
