@@ -7,6 +7,8 @@ class Sprite extends Rect {
     const setSize = () => {
       this.img.width = this.size.x = this.spriteSize.x = this.size.x || this.spriteSize.x || this.img.naturalWidth;
       this.img.height = this.size.y = this.spriteSize.y = this.size.y || this.spriteSize.y || this.img.naturalHeight;
+      this.size.x *= 3; // scale them up, because they are small
+      this.size.y *= 3; // scale them up, because they are small
     }
     if (img instanceof Image) {
       this.img = img;

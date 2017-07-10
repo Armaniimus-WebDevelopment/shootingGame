@@ -2,13 +2,7 @@ class Entity extends Sprite {
   constructor(img, health = 20, x, y, w, h, sx, sy, sw, sh, middleX, middleY) {
     super(img, x, y, w, h, sx, sy, sw, sh, middleX, middleY);
     this.health = health;
-    this.size.x *= 3;
-    this.size.y *= 3;
-    // scale it a bit
-    this.img.addEventListener("load", () => {
-      this.size.x *= 3;
-      this.size.y *= 3;
-    });
+    this.attachments = []; // you can put stuff like arms in here. the x, y pos will be relative to the entity
   }
   lookAt(entity, speed) {
     const dist = this.pos.distance(entity.pos);
