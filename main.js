@@ -19,14 +19,15 @@ class Game extends Engine {
     this._context.translate(this._canvas.width/2,  this._canvas.height/2);
     this._context.rotate(this.camAngle / 180 * Math.PI); // rotate everything except the player
 
+
+    this.zombies.forEach(zombie => {
+      this.drawSprite(zombie); // draw each zombie
+    });
+    
     this.players.forEach((player, index) => {
       if (index != 0) {
         this.drawSprite(player); // draw each player except the first one
       }
-    });
-
-    this.zombies.forEach(zombie => {
-      this.drawSprite(zombie); // draw each zombie
     });
 
     this._context.restore();
@@ -43,11 +44,11 @@ class Game extends Engine {
     this._context.save();
 
     // collider of the player
-    this._context.fillStyle = "#000";
-    this._context.fillRect(0 - player.size.x/2, 0 - player.size.y/2, player.size.x, player.size.y);
+    // this._context.fillStyle = "#000";
+    // this._context.fillRect(0 - player.size.x/2, 0 - player.size.y/2, player.size.x, player.size.y);
 
     this._context.rotate((this.camAngle - player.rotation) / 180 * Math.PI);
-    this._context.drawImage(player.img, 0 - this.players[0].size.x/2, 0 - this.players[0].size.y/2, player.size.x, player.size.y); // draws from the center
+    this._context.drawImage(player.img, player.spritePos.x, player.spritePos.y, player.spriteSize.x, player.spriteSize.y, 0 - this.players[0].size.x/2, 0 - this.players[0].size.y/2, player.size.x, player.size.y); // draws from the center
     this._context.restore();
   }
 
@@ -55,9 +56,9 @@ class Game extends Engine {
     this._context.save();
     this._context.translate(sprite.pos.x - this.players[0].pos.x, sprite.pos.y - this.players[0].pos.y);
     // collider of the zombie
-    this._context.fillStyle = "#000";
-    this._context.fillRect(0 - sprite.size.x/2, 0 - sprite.size.y/2, sprite.size.x, sprite.size.y);
-    
+    // this._context.fillStyle = "#000";
+    // this._context.fillRect(0 - sprite.size.x/2, 0 - sprite.size.y/2, sprite.size.x, sprite.size.y);
+
     this._context.rotate(sprite.rotation / 180 * Math.PI);
     // guide line to see where the sprite is "looking"
     // this._context.beginPath();
@@ -65,7 +66,7 @@ class Game extends Engine {
     // this._context.lineTo(0,-300);
     // this._context.stroke();
     // this._context.closePath();
-    this._context.drawImage(sprite.img, 0 - sprite.size.x/2, 0 - sprite.size.y/2, sprite.size.x, sprite.size.y); // draws from the center
+    this._context.drawImage(sprite.img, sprite.spritePos.x, sprite.spritePos.y, sprite.spriteSize.x, sprite.spriteSize.y, 0 - sprite.size.x/2, 0 - sprite.size.y/2, sprite.size.x, sprite.size.y); // draws from the center
     this._context.restore();
   }
 
@@ -111,6 +112,6 @@ class Game extends Engine {
 }
 
 const canvas = document.getElementById("canvas");
-canvas.width = document.body.clientWidth;
-canvas.height = document.body.clientHeight;
+canvas.width = document.body.clientWidth; // sets the canvas width to full body width
+canvas.height = document.body.clientHeight; // sets the canvas height to full body width
 const game = new Game(canvas);

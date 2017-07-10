@@ -34,7 +34,7 @@ class Engine {
   }
 
   drawSprite(sprite) {
-    this._context.drawImage(sprite.img, sprite.pos.x - sprite.size.x/2, sprite.pos.y - sprite.size.y/2, sprite.size.x, sprite.size.y); // draws from the center
+    this._context.drawImage(sprite.img, sprite.pos.x - sprite.size.x/2, sprite.pos.y - sprite.size.y/2, sprite.size.x, sprite.size.y, sprite.sx, sprite.sy, sprite.sw, sprite.sh); // draws from the center
   }
 
 }

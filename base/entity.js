@@ -1,6 +1,6 @@
 class Entity extends Sprite {
-  constructor(img, health = 20) {
-    super(img);
+  constructor(img, health = 20, x, y, w, h, sx, sy, sw, sh, middleX, middleY) {
+    super(img, x, y, w, h, sx, sy, sw, sh, middleX, middleY);
     this.health = health;
 
     // scale it a bit

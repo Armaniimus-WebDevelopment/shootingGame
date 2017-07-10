@@ -1,6 +1,6 @@
 class Player extends Entity {
   constructor() {
-    super("img/player.png");
+    super("img/spriteSheet.png", 20, 0, 0, 15, 18, 0, 0, 15, 18);
   }
   // moves the player and takes the rotation in to account
   forwards(speed) {
@@ -11,6 +11,6 @@ class Player extends Entity {
 
 class Zombie extends Entity {
   constructor() {
-    super("img/zombie.png", 10);
+    super("img/spriteSheet.png", 10, 0, 0, 15, 18, 16, 0, 15, 15);
   }
 }
