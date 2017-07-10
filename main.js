@@ -12,19 +12,11 @@ class Game extends Engine {
       this.zombies = [];
       for (var i = 0; i < 25; i++) {
         const zombie = new Zombie(this.spriteSheet);
-        zombie.pos.x = Math.random() * 1000 + 500;
-        zombie.pos.y = Math.random() * 1000 + 500;
+        zombie.pos.x = Math.random() * 6000 + 500;
+        zombie.pos.y = Math.random() * 6000 + 500;
         this.zombies.push(zombie);
       }
-      this.map = [];
-      for (var x = 0; x < 25; x++) {
-        for (var y = 0; y < 25; y++) {
-          const sprite = new Floor(this.spriteSheet);
-          sprite.pos.x = x * sprite.size.x;
-          sprite.pos.y = y * sprite.size.y;
-          this.map.push(sprite);
-        }
-      }
+      this.floor = new Floor(this.spriteSheet);
       this.loaded = true;
     });
   }
@@ -43,9 +35,7 @@ class Game extends Engine {
     this._context.translate(this._canvas.width/2,  this._canvas.height/2);
     this._context.rotate(this.camAngle / 180 * Math.PI); // rotate everything except the player
 
-    this.map.forEach(object => {
-      this.drawSprite(object);
-    });
+    this.drawFloor(this.floor, 50, 50);
 
     this.zombies.forEach(zombie => {
       this.drawSprite(zombie); // draw each zombie
@@ -94,6 +84,18 @@ class Game extends Engine {
     // this._context.stroke();
     // this._context.closePath();
     this._context.drawImage(sprite.img, sprite.spritePos.x, sprite.spritePos.y, sprite.spriteSize.x, sprite.spriteSize.y, 0 - sprite.size.x/2, 0 - sprite.size.y/2, sprite.size.x, sprite.size.y); // draws from the center
+    this._context.restore();
+  }
+
+  drawFloor(floor, sizeX, sizeY) {
+    this._context.save();
+    this._context.translate(floor.pos.x - this.players[0].pos.x, floor.pos.y - this.players[0].pos.y);
+    this._context.rotate(floor.rotation / 180 * Math.PI);
+    for (var x = 0; x < sizeX; x++) {
+      for (var y = 0; y < sizeY; y++) {
+        this._context.drawImage(floor.img, floor.spritePos.x, floor.spritePos.y, floor.spriteSize.x, floor.spriteSize.y, 0 - floor.size.x/2 + floor.size.x*x, 0 - floor.size.x/2 + floor.size.y*y, floor.size.x, floor.size.y); // draws from the center
+      }
+    }
     this._context.restore();
   }
 
