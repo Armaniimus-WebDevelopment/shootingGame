@@ -41,6 +41,11 @@ class Game extends Engine {
 
   drawPlayer(player) {
     this._context.save();
+
+    // collider of the player
+    this._context.fillStyle = "#000";
+    this._context.fillRect(0 - player.size.x/2, 0 - player.size.y/2, player.size.x, player.size.y);
+
     this._context.rotate((this.camAngle - player.rotation) / 180 * Math.PI);
     this._context.drawImage(player.img, 0 - this.players[0].size.x/2, 0 - this.players[0].size.y/2, player.size.x, player.size.y); // draws from the center
     this._context.restore();
@@ -49,6 +54,10 @@ class Game extends Engine {
   drawSprite(sprite) {
     this._context.save();
     this._context.translate(sprite.pos.x - this.players[0].pos.x, sprite.pos.y - this.players[0].pos.y);
+    // collider of the zombie
+    this._context.fillStyle = "#000";
+    this._context.fillRect(0 - sprite.size.x/2, 0 - sprite.size.y/2, sprite.size.x, sprite.size.y);
+    
     this._context.rotate(sprite.rotation / 180 * Math.PI);
     // guide line to see where the sprite is "looking"
     // this._context.beginPath();
@@ -103,5 +112,5 @@ class Game extends Engine {
 
 const canvas = document.getElementById("canvas");
 canvas.width = document.body.clientWidth;
-canvas.height = document.body.clientHeight - 5;
+canvas.height = document.body.clientHeight;
 const game = new Game(canvas);

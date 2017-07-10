@@ -12,6 +12,9 @@ class Entity extends Sprite {
   lookAt(entity, speed) {
     const dist = this.pos.distance(entity.pos);
     const targetRotation = (Math.atan2(dist.y, dist.x) * 180 / Math.PI - 90);
+    if (dist.x < 5 && dist.y < 5) {
+      speed = 1; // sort of fixes weird movement
+    }
     this.rotation += (targetRotation - this.rotation) * speed;
   }
 }
