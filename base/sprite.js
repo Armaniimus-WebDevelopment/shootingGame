@@ -4,16 +4,20 @@ class Sprite extends Rect {
     this.middle = new Vec(middleX, middleY); // TODO: render it differently with this, use as offset in drawing
     this.spritePos = new Vec(sx, sy);
     this.spriteSize = new Vec(sw, sh)
+    const setSize = () => {
+      this.img.width = this.size.x = this.spriteSize.x = this.size.x || this.spriteSize.x || this.img.naturalWidth;
+      this.img.height = this.size.y = this.spriteSize.y = this.size.y || this.spriteSize.y || this.img.naturalHeight;
+    }
     if (img instanceof Image) {
       this.img = img;
+      setSize();
     } else {
       this.img = document.createElement("img");
       this.img.src = img;
       this.img.width = this.size.x;
       this.img.height = this.size.y;
       this.img.addEventListener("load", () => {
-        this.img.width = this.size.x = this.spriteSize.x = this.size.x || this.spriteSize.x || this.img.naturalWidth;
-        this.img.height = this.size.y = this.spriteSize.y = this.size.y || this.spriteSize.y || this.img.naturalHeight;
+        setSize();
       });
     }
   }

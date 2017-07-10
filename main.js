@@ -1,14 +1,38 @@
 class Game extends Engine {
   constructor(canvas) {
     super(canvas);
+    this.loaded = false;
     this.camAngle = 0;
-    this.players = [new Player, new Player];
-    this.players[0].x, this.players[0].y = -250;
-    this.players[1].x, this.players[1].y = -500;
-    this.zombies = [new Zombie];
+    this.spriteSheet = document.createElement("img");
+    this.spriteSheet.src = "img/spriteSheet.png";
+    this.spriteSheet.addEventListener("load", () => {
+      this.players = [new Player(this.spriteSheet), new Player(this.spriteSheet)];
+      this.players[0].x, this.players[0].y = -250;
+      this.players[1].x, this.players[1].y = -500;
+      this.zombies = [];
+      for (var i = 0; i < 25; i++) {
+        const zombie = new Zombie(this.spriteSheet);
+        zombie.pos.x = Math.random() * 1000 + 500;
+        zombie.pos.y = Math.random() * 1000 + 500;
+        this.zombies.push(zombie);
+      }
+      this.map = [];
+      for (var x = 0; x < 25; x++) {
+        for (var y = 0; y < 25; y++) {
+          const sprite = new Floor(this.spriteSheet);
+          sprite.pos.x = x * sprite.size.x;
+          sprite.pos.y = y * sprite.size.y;
+          this.map.push(sprite);
+        }
+      }
+      this.loaded = true;
+    });
   }
 
   draw() {
+    if (!this.loaded) {
+      return;
+    }
     // clear the screen
     this._context.fillStyle = "#eee";
     this._context.fillRect(0, 0, this._canvas.width, this._canvas.height);
@@ -19,11 +43,14 @@ class Game extends Engine {
     this._context.translate(this._canvas.width/2,  this._canvas.height/2);
     this._context.rotate(this.camAngle / 180 * Math.PI); // rotate everything except the player
 
+    this.map.forEach(object => {
+      this.drawSprite(object);
+    });
 
     this.zombies.forEach(zombie => {
       this.drawSprite(zombie); // draw each zombie
     });
-    
+
     this.players.forEach((player, index) => {
       if (index != 0) {
         this.drawSprite(player); // draw each player except the first one
@@ -71,6 +98,9 @@ class Game extends Engine {
   }
 
   simulate(dt) {
+    if (!this.loaded) {
+      return;
+    }
     this.camAngle += (this.players[0].rotation - this.camAngle) * 15 * dt; // adds an smooth rotation
 
     this.zombies.forEach(zombie => {

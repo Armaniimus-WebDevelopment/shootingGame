@@ -2,7 +2,8 @@ class Entity extends Sprite {
   constructor(img, health = 20, x, y, w, h, sx, sy, sw, sh, middleX, middleY) {
     super(img, x, y, w, h, sx, sy, sw, sh, middleX, middleY);
     this.health = health;
-
+    this.size.x *= 3;
+    this.size.y *= 3;
     // scale it a bit
     this.img.addEventListener("load", () => {
       this.size.x *= 3;
