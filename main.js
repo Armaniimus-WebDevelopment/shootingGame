@@ -19,6 +19,7 @@ class Game extends Engine {
       this.floor = new Floor(this.spriteSheet);
       this.loaded = true;
     });
+    this.hud = new Hud(0, 0, this._canvas.width, this._canvas.height);
   }
 
   draw() {
@@ -57,7 +58,17 @@ class Game extends Engine {
     this.drawAttachment(this.players[0], this.players[0].attachments[0]);
     this.drawPlayer(this.players[0]);
     this._context.rotate(this.camAngle / 180 * Math.PI); // rotate everything except the player
+
     this._context.restore();
+
+    this.drawHud(this.hud);
+
+  }
+
+  drawHud(hud) {
+    hud.draw(); // update the hud
+
+    this._context.drawImage(hud.canvas, 0, 0);
 
   }
 
@@ -120,16 +131,25 @@ class Game extends Engine {
     if (!this.loaded) {
       return;
     }
+
     this.camAngle += (this.players[0].rotation - this.camAngle) * 15 * dt; // adds an smooth rotation
+
+    // update hud
+    this.hud.items.healthBar.set(this.players[0].healthPercentage);
+
+    //check for collision
+    this.players.forEach(player => {
+      this.zombies.forEach(zombie => {
+        // console.log(player.collide(zombie));
+      });
+    });
 
     // move the zombies
     this.zombies.forEach(zombie => {
       // get the distances
-      const len = this.players.map((player) => {
-        return zombie.pos.distance(player.pos);
-      }).map((dist) => {
-        return dist.len;
-      });
+      const len = this.players
+        .map(player => zombie.pos.distance(player.pos))
+        .map(dist => dist.len);
 
       // get the closest player from the array
       let closest = 0;
@@ -146,7 +166,7 @@ class Game extends Engine {
 
     // do stuff with the input
     if (this.inputHandler.down.indexOf("down") != -1) {
-      this.players[0].backwards(150 * dt); // move 150 px per second
+      this.players[0].backwards(110 * dt); // move 150 px per second
     }
     if (this.inputHandler.down.indexOf("up") != -1) {
       this.players[0].forwards(150 * dt); // move 150 px per second

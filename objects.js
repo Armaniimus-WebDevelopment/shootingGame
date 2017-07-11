@@ -1,6 +1,7 @@
 class Player extends Entity {
-  constructor(img = "img/spriteSheet.png") {
-    super(img, 20, 0, 0, 15, 18, 0, 0, 15, 18);
+  constructor(img = "img/spriteSheet.png", name) {
+    super(img, 20, 0, 0, 15, 18, 0, 0, 15, 18, 0, 2);
+    this.name = name;
     this.attachments.push(new Sprite(img, 0, 0, 23, 32, 65, 0, 23, 32, 0, -30)); // push in the arms
   }
   // moves the player and takes the rotation in to account

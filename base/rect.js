@@ -30,7 +30,8 @@ class Rect {
   }
   // checks if the given rect collides with it
   collide(rect) {
-
+    return (this.left < rect.right && this.right > rect.left &&
+            this.top < rect.bottom && this.bottom > rect.top);
   }
   move(x, y) {
     this.x = x;

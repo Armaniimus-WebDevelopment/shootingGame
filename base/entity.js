@@ -1,7 +1,8 @@
 class Entity extends Sprite {
   constructor(img, health = 20, x, y, w, h, sx, sy, sw, sh, middleX, middleY) {
     super(img, x, y, w, h, sx, sy, sw, sh, middleX, middleY);
-    this.health = health;
+    this.maxHealth = health;
+    this.health = this.maxHealth;
     this.attachments = []; // you can put stuff like arms in here. the x, y pos will be relative to the entity
   }
   lookAt(entity, speed) {
@@ -11,5 +12,8 @@ class Entity extends Sprite {
       speed = 1; // sort of fixes weird movement
     }
     this.rotation += (targetRotation - this.rotation) * speed;
+  }
+  get healthPercentage() {
+    return this.health / this.maxHealth * 100;
   }
 }
