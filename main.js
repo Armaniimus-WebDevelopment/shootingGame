@@ -22,6 +22,7 @@ class Game extends Engine {
   }
 
   draw() {
+    // if the isn't loaded yet return(don't go further)
     if (!this.loaded) {
       return;
     }
@@ -35,7 +36,7 @@ class Game extends Engine {
     this._context.translate(this._canvas.width/2,  this._canvas.height/2);
     this._context.rotate(this.camAngle / 180 * Math.PI); // rotate everything except the player
 
-    this.drawFloor(this.floor, 50, 50);
+    this.drawFloor(this.floor, 50, 50); // draws the floor with 50x50 size
 
     this.zombies.forEach(zombie => {
       this.drawAttachment(zombie, zombie.attachments[0]); // draw each zombies arms
@@ -115,11 +116,13 @@ class Game extends Engine {
   }
 
   simulate(dt) {
+    // if the isn't loaded yet return(don't go further)
     if (!this.loaded) {
       return;
     }
     this.camAngle += (this.players[0].rotation - this.camAngle) * 15 * dt; // adds an smooth rotation
 
+    // move the zombies
     this.zombies.forEach(zombie => {
       // get the distances
       const len = this.players.map((player) => {
@@ -135,24 +138,27 @@ class Game extends Engine {
           closest = i;
         }
       }
-      // rotate to the closest person
+      // rotate to the closest player
       zombie.lookAt(this.players[closest], 1 * dt);
-      // move towards the player
+      // move towards the closest player
       zombie.forwards(100 * dt);
     });
 
     // do stuff with the input
     if (this.inputHandler.down.indexOf("down") != -1) {
-      this.players[0].backwards(150 * dt);
+      this.players[0].backwards(150 * dt); // move 150 px per second
     }
     if (this.inputHandler.down.indexOf("up") != -1) {
-      this.players[0].forwards(150 * dt);
+      this.players[0].forwards(150 * dt); // move 150 px per second
     }
     if (this.inputHandler.down.indexOf("left") != -1) {
-      this.players[0].rotation += 180 * dt;
+      this.players[0].rotation += 180 * dt; // rotate 180 deg per second
     }
     if (this.inputHandler.down.indexOf("right") != -1) {
-      this.players[0].rotation -= 180 * dt;
+      this.players[0].rotation -= 180 * dt; // rotate 180 deg per second
+    }
+    if (this.inputHandler.down.indexOf("space") != -1) {
+      // TODO: shoot the gun
     }
   }
 
@@ -160,5 +166,5 @@ class Game extends Engine {
 
 const canvas = document.getElementById("canvas");
 canvas.width = document.body.clientWidth; // sets the canvas width to full body width
-canvas.height = document.body.clientHeight; // sets the canvas height to full body width
+canvas.height = document.body.clientHeight; // sets the canvas height to full body height
 const game = new Game(canvas);
