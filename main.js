@@ -68,7 +68,7 @@ class Game extends Engine {
     // this._context.fillRect(0 - player.size.x/2, 0 - player.size.y/2, player.size.x, player.size.y);
 
     this._context.rotate((this.camAngle - player.rotation) / 180 * Math.PI);
-    this._context.drawImage(player.img, player.spritePos.x, player.spritePos.y, player.spriteSize.x, player.spriteSize.y, 0 - this.players[0].size.x/2, 0 - this.players[0].size.y/2, player.size.x, player.size.y); // draws from the center
+    this._context.drawImage(player.img, player.spritePos.x, player.spritePos.y, player.spriteSize.x, player.spriteSize.y, 0 - player.size.x/2 + player.middle.x, 0 - player.size.y/2 + player.middle.y, player.size.x, player.size.y); // draws from the center
     this._context.restore();
   }
 
@@ -86,7 +86,7 @@ class Game extends Engine {
     // this._context.lineTo(0,-300);
     // this._context.stroke();
     // this._context.closePath();
-    this._context.drawImage(sprite.img, sprite.spritePos.x, sprite.spritePos.y, sprite.spriteSize.x, sprite.spriteSize.y, 0 - sprite.size.x/2, 0 - sprite.size.y/2, sprite.size.x, sprite.size.y); // draws from the center
+    this._context.drawImage(sprite.img, sprite.spritePos.x, sprite.spritePos.y, sprite.spriteSize.x, sprite.spriteSize.y, 0 - sprite.size.x/2 + sprite.middle.x, 0 - sprite.size.y/2 + sprite.middle.y, sprite.size.x, sprite.size.y); // draws from the center
     this._context.restore();
   }
 
@@ -96,7 +96,7 @@ class Game extends Engine {
     this._context.rotate(floor.rotation / 180 * Math.PI);
     for (var x = 0; x < sizeX; x++) {
       for (var y = 0; y < sizeY; y++) {
-        this._context.drawImage(floor.img, floor.spritePos.x, floor.spritePos.y, floor.spriteSize.x, floor.spriteSize.y, 0 - floor.size.x/2 + floor.size.x*x, 0 - floor.size.x/2 + floor.size.y*y, floor.size.x, floor.size.y); // draws from the center
+        this._context.drawImage(floor.img, floor.spritePos.x, floor.spritePos.y, floor.spriteSize.x, floor.spriteSize.y, 0 - floor.size.x/2 + floor.size.x*x + floor.middle.x, 0 - floor.size.x/2 + floor.size.y*y + floor.middle.y, floor.size.x, floor.size.y); // draws from the center
       }
     }
     this._context.restore();
@@ -104,9 +104,13 @@ class Game extends Engine {
 
   drawAttachment(entity, attachment) {
     this._context.save();
-    this._context.translate(entity.pos.x - this.players[0].pos.x + attachment.pos.x/2, entity.pos.y - this.players[0].pos.y  + attachment.pos.y/2);
-    this._context.rotate((entity.rotation + attachment.rotation) / 180 * Math.PI);
-    this._context.drawImage(attachment.img, attachment.spritePos.x, attachment.spritePos.y, attachment.spriteSize.x, attachment.spriteSize.y, 0 - attachment.size.x/2, 0 - attachment.size.y/2, attachment.size.x, attachment.size.y); // draws from the center
+    this._context.translate(entity.pos.x - this.players[0].pos.x, entity.pos.y - this.players[0].pos.y);
+    if (entity === this.players[0]) {
+      this._context.rotate(attachment.rotation / 180 * Math.PI);
+    } else {
+      this._context.rotate((entity.rotation + attachment.rotation) / 180 * Math.PI);
+    }
+    this._context.drawImage(attachment.img, attachment.spritePos.x, attachment.spritePos.y, attachment.spriteSize.x, attachment.spriteSize.y, 0 - attachment.size.x/2 + attachment.middle.x, 0 - attachment.size.y/2 + attachment.middle.y, attachment.size.x, attachment.size.y); // draws from the center
     this._context.restore();
   }
 

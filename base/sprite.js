@@ -1,5 +1,5 @@
 class Sprite extends Rect {
-  constructor(img, x, y, w, h, sx = 0, sy = 0, sw, sh, middleX, middleY) {
+  constructor(img, x, y, w, h, sx = 0, sy = 0, sw, sh, middleX = 0, middleY = 0) {
     super(x, y, w, h);
     this.middle = new Vec(middleX, middleY); // TODO: render it differently with this, use as offset in drawing
     this.spritePos = new Vec(sx, sy);
