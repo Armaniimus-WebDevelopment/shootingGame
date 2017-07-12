@@ -22,11 +22,9 @@ class Game extends Engine {
     this.hud = new PlayerHud(0, 0, this._canvas.width, this._canvas.height);
     this.bullets = [];
 
-    // shoot function
+    // shoot wrapper function
     this.inputHandler.on("space", false, e => {
-      const bullet = new Bullet(this.players[0].x, this.players[0].y, -this.camAngle, this.players[0]);
-      bullet.forwards(86); // offset, to make it look like it comes out of the gun
-      this.bullets.push(bullet);
+      this.shoot(e);
     });
   }
 
@@ -223,6 +221,12 @@ class Game extends Engine {
     if (this.inputHandler.down.indexOf("right") != -1) {
       this.players[0].rotation -= 180 * dt; // rotate 180 deg per second
     }
+  }
+  // shoots a bullet from player 1
+  shoot(e) {
+    const bullet = new Bullet(this.players[0].x, this.players[0].y, -this.camAngle, this.players[0]);
+    bullet.forwards(86); // offset, to make it look like it comes out of the gun
+    this.bullets.push(bullet);
   }
 
 }
