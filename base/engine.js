@@ -56,6 +56,8 @@ class InputHandler {
 
     this.down = []; // stores the keys that are down(pressed)
 
+    this.eventListeners = [];
+
     document.addEventListener("keydown", e => {
       this.keyDown(e);
     });
@@ -68,8 +70,24 @@ class InputHandler {
     if (this.down.indexOf(key) === -1 && key) {
       this.down.push(key);
     }
+    const funcs = this.eventListeners.filter(x => x.key === this.keys[e.keyCode] && x.up === false);
+    for (var i = 0; i < funcs.length; i++) {
+      funcs[i].function(e);
+    }
   }
   keyUp(e) {
     this.down.splice(this.down.indexOf(this.keys[e.keyCode]), 1);
+    const funcs = this.eventListeners.filter(x => x.key === this.keys[e.keyCode] && x.up === true);
+    for (var i = 0; i < funcs.length; i++) {
+      funcs[i].function(e);
+    }
+  }
+  /*
+  * @param 1 {string} key you want to listen for in text example: "space"
+  * @param 2 {boolean} if you want to listen for key up, true or false, if false you will get keyDown
+  * @param 3 {function} the callback
+  */
+  on(key, up, func) {
+    this.eventListeners.push({key: key, up: up, function: func});
   }
 }

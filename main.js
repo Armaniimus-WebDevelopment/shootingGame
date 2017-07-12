@@ -10,10 +10,10 @@ class Game extends Engine {
       this.players[0].x, this.players[0].y = -250;
       this.players[1].x, this.players[1].y = -500;
       this.zombies = [];
-      for (var i = 0; i < 1; i++) {
+      for (var i = 0; i < 25; i++) {
         const zombie = new Zombie(this.spriteSheet);
-        // zombie.pos.x = Math.random() * 6000 + 500;
-        // zombie.pos.y = Math.random() * 6000 + 500;
+        zombie.pos.x = Math.random() * 6000 + 500;
+        zombie.pos.y = Math.random() * 6000 + 500;
         this.zombies.push(zombie);
       }
       this.floor = new Floor(this.spriteSheet);
@@ -21,6 +21,13 @@ class Game extends Engine {
     });
     this.hud = new PlayerHud(0, 0, this._canvas.width, this._canvas.height);
     this.bullets = [];
+
+    // shoot function
+    this.inputHandler.on("space", false, e => {
+      const bullet = new Bullet(this.players[0].x, this.players[0].y, -this.camAngle, this.players[0]);
+      bullet.forwards(86); // offset, to make it look like it comes out of the gun
+      this.bullets.push(bullet);
+    });
   }
 
   draw() {
@@ -215,12 +222,6 @@ class Game extends Engine {
     }
     if (this.inputHandler.down.indexOf("right") != -1) {
       this.players[0].rotation -= 180 * dt; // rotate 180 deg per second
-    }
-    if (this.inputHandler.down.indexOf("space") != -1) {
-      // TODO: shoot the gun
-      const bullet = new Bullet(this.players[0].x, this.players[0].y, -this.camAngle, this.players[0]);
-      bullet.forwards(86); // offset, to make it look like it comes out of the gun
-      this.bullets.push(bullet);
     }
   }
 
