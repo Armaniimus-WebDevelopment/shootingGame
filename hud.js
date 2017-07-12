@@ -1,19 +1,3 @@
-class HudItem extends Rect{
-  constructor(x, y, w, h) {
-    super(x, y, w, h)
-    this._canvas = document.createElement("canvas");
-    this._canvas.width = this.size.x;
-    this._canvas.height = this.size.y;
-    this._context = this._canvas.getContext("2d");
-  }
-  draw() {
-
-  }
-  get canvas() {
-    return this._canvas;
-  }
-}
-
 class HealthBar extends HudItem {
   constructor(x, y, w, h) {
     super(x, y, w, h);
@@ -47,7 +31,7 @@ class HealthBar extends HudItem {
   }
 }
 
-class Hud extends HudItem{
+class PlayerHud extends Hud {
   /*
   * @param1 {int} canvas width
   * @param2 {int} canvas height
@@ -57,13 +41,5 @@ class Hud extends HudItem{
     this.items = {
       "healthBar": new HealthBar(20, 20, 250, 35)
     };
-  }
-  draw() {
-    for (var item in this.items) {
-      if (this.items.hasOwnProperty(item)) {
-        this.items[item].draw();
-        this._context.drawImage(this.items[item].canvas, this.items[item].x, this.items[item].y, this.items[item].size.x, this.items[item].size.y);
-      }
-    }
   }
 }

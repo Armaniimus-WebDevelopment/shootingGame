@@ -19,7 +19,7 @@ class Game extends Engine {
       this.floor = new Floor(this.spriteSheet);
       this.loaded = true;
     });
-    this.hud = new Hud(0, 0, this._canvas.width, this._canvas.height);
+    this.hud = new PlayerHud(0, 0, this._canvas.width, this._canvas.height);
   }
 
   draw() {
