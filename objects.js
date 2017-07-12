@@ -23,3 +23,16 @@ class Floor extends Sprite {
     super(img, 0, 0, 32, 32, 32, 0, 32, 32);
   }
 }
+
+class Bullet extends Rect {
+  constructor(x, y, rotation, shooter) {
+    super(x, y, 3, 9);
+    this.color = "#FFD700";
+    this.shooter = shooter;
+    this.rotation = rotation;
+    this.creationTime = new Date();
+  }
+  get dmg() {
+    return this.shooter.dmg;
+  }
+}

@@ -3,6 +3,7 @@ class Entity extends Sprite {
     super(img, x, y, w, h, sx, sy, sw, sh, middleX, middleY);
     this.maxHealth = health;
     this.health = this.maxHealth;
+    this.dmg = 5;
     this.attachments = []; // you can put stuff like arms in here. the x, y pos will be relative to the entity
   }
   lookAt(entity, speed) {

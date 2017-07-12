@@ -2,6 +2,7 @@ class Rect {
   constructor(x = 0, y = 0, w = 0, h = 0) {
     this.pos = new Vec(x, y);
     this.size = new Vec(w, h);
+    this.color = "#000";
     this.rotation = 0;
   }
   get left() {

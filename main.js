@@ -20,6 +20,7 @@ class Game extends Engine {
       this.loaded = true;
     });
     this.hud = new PlayerHud(0, 0, this._canvas.width, this._canvas.height);
+    this.bullets = [];
   }
 
   draw() {
@@ -51,6 +52,10 @@ class Game extends Engine {
       }
     });
 
+    this.bullets.forEach(bullet => {
+      this.drawRect(bullet);
+    });
+
     this._context.restore();
 
     this._context.save();
@@ -63,6 +68,15 @@ class Game extends Engine {
 
     this.drawHud(this.hud);
 
+  }
+
+  drawRect(rect) {
+    this._context.save();
+    this._context.translate(rect.pos.x - this.players[0].pos.x, rect.pos.y - this.players[0].pos.y);
+    this._context.rotate(rect.rotation / 180 * Math.PI);
+    this._context.fillStyle = rect.color;
+    this._context.fillRect(0 - rect.size.x/2, 0 - rect.size.y/2, rect.size.x, rect.size.y);
+    this._context.restore();
   }
 
   drawHud(hud) {
@@ -138,6 +152,29 @@ class Game extends Engine {
     this.hud.items.healthBar.percentage = this.players[0].healthPercentage;
 
 
+    // move bullets
+    this.bullets.forEach(bullet => {
+      // console.log(bullet.creationTime.valueOf(), new Date);
+      if (bullet.creationTime.valueOf()+1000 < Date.now()) {
+        this.bullets.splice(this.bullets.indexOf(bullet) , 1); // remove the bullet
+      } else {
+        const collisions = this.zombies.map(zombie => {
+          return {collides: zombie.collide(bullet), zombie: zombie}
+        });
+        const collision = collisions.find(x => x.collides === true);
+        if (collision) {
+          console.log("hit!", collision.zombie);
+          collision.zombie.health -= bullet.dmg;
+          if (collision.zombie.health <= 0) {
+            this.zombies.splice(this.zombies.indexOf(collision.zombie), 1);
+          }
+          this.bullets.splice(this.bullets.indexOf(bullet) , 1); // remove the bullet
+        } else {
+          bullet.forwards(2500 * dt);
+        }
+      }
+    });
+
 
     //check for collision
     this.players.forEach(player => {
@@ -181,6 +218,9 @@ class Game extends Engine {
     }
     if (this.inputHandler.down.indexOf("space") != -1) {
       // TODO: shoot the gun
+      const bullet = new Bullet(this.players[0].x, this.players[0].y, -this.camAngle, this.players[0]);
+      bullet.forwards(86); // offset, to make it look like it comes out of the gun
+      this.bullets.push(bullet);
     }
   }
 
