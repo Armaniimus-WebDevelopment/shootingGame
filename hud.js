@@ -17,7 +17,7 @@ class HudItem extends Rect{
 class HealthBar extends HudItem {
   constructor(x, y, w, h) {
     super(x, y, w, h);
-    this.percentage = 100;
+    this.per = 100;
     this.padding = 1;
     this.colors = {
       "bg": "#000",
@@ -26,9 +26,12 @@ class HealthBar extends HudItem {
       "orange": "#f39c12"
     }
   }
-  set(per) {
-    this.percentage = per;
+  set percentage(per) {
+    this.per = per;
     this.draw();
+  }
+  get percentage() {
+    return this.per;
   }
   draw() {
     this._context.fillStyle = this.colors.bg;

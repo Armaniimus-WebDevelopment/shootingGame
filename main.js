@@ -135,7 +135,9 @@ class Game extends Engine {
     this.camAngle += (this.players[0].rotation - this.camAngle) * 15 * dt; // adds an smooth rotation
 
     // update hud
-    this.hud.items.healthBar.set(this.players[0].healthPercentage);
+    this.hud.items.healthBar.percentage = this.players[0].healthPercentage;
+
+
 
     //check for collision
     this.players.forEach(player => {
