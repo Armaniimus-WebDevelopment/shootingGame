@@ -6,9 +6,8 @@ class Game extends Engine {
     this.spriteSheet = document.createElement("img");
     this.spriteSheet.src = "img/spriteSheet.png";
     this.spriteSheet.addEventListener("load", () => {
-      this.players = [new Player(this.spriteSheet), new Player(this.spriteSheet)];
-      this.players[0].x, this.players[0].y = -250;
-      this.players[1].x, this.players[1].y = -500;
+      this.players = [new Player(this.spriteSheet)];
+      this.players[0].x = this.players[0].y = 2000;
       this.zombies = [];
       for (var i = 0; i < 25; i++) {
         const zombie = new Zombie(this.spriteSheet);
@@ -224,7 +223,7 @@ class Game extends Engine {
   }
   // shoots a bullet from player 1
   shoot(e) {
-    const bullet = new Bullet(this.players[0].x, this.players[0].y, -this.camAngle, this.players[0]);
+    const bullet = new Bullet(this.players[0].x, this.players[0].y, -this.camAngle + (Math.random()-0.5)*10, this.players[0]);
     bullet.forwards(86); // offset, to make it look like it comes out of the gun
     this.bullets.push(bullet);
   }

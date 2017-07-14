@@ -51,7 +51,8 @@ class InputHandler {
       37: "left",
       68: "right",
       39: "right",
-      32: "space"
+      32: "space",
+      82: "reload"
     };
 
     this.down = []; // stores the keys that are down(pressed)
@@ -69,10 +70,10 @@ class InputHandler {
     const key = this.keys[e.keyCode];
     if (this.down.indexOf(key) === -1 && key) {
       this.down.push(key);
-    }
-    const funcs = this.eventListeners.filter(x => x.key === this.keys[e.keyCode] && x.up === false);
-    for (var i = 0; i < funcs.length; i++) {
-      funcs[i].function(e);
+      const funcs = this.eventListeners.filter(x => x.key === this.keys[e.keyCode] && x.up === false);
+      for (var i = 0; i < funcs.length; i++) {
+        funcs[i].function(e);
+      }
     }
   }
   keyUp(e) {

@@ -7,7 +7,7 @@ class HudItem extends Rect{
     this._context = this._canvas.getContext("2d");
   }
   draw() {
-
+    this._context.clearRect(0, 0, this.size.x, this.size.y);
   }
   get canvas() {
     return this._canvas;
@@ -22,10 +22,11 @@ class Hud extends HudItem{
   constructor(x, y, w, h) {
     super(x, y, w, h);
     this.items = {
-      
+
     };
   }
   draw() {
+    this._context.clearRect(0, 0, this.size.x, this.size.y);
     for (var item in this.items) {
       if (this.items.hasOwnProperty(item)) {
         this.items[item].draw();
