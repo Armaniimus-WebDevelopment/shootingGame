@@ -1,30 +1,3 @@
-class TextField extends HudItem {
-  constructor(x, y, w, h, text = "sample text") {
-    super(x, y, w, h);
-    this._text = text;
-    this._font = "32px serif";
-    this._context.font = this.font;
-    this._context.textBaseline = 'middle';
-  }
-  draw() {
-    super.draw();
-    this._context.fillText(this.text, 0, this.size.y/2);
-  }
-  set text(text) {
-    this._text = text;
-  }
-  get text() {
-    return this._text;
-  }
-  set font(font) {
-    this._font = font;
-    this._context.font = this.font;
-  }
-  get font() {
-    return this._font;
-  }
-}
-
 class BulletDisplay extends TextField {
   constructor(x, y, w, h) {
     super(x, y, w, h, "8/16");
