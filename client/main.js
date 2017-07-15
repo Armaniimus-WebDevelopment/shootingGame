@@ -25,6 +25,9 @@ class Game extends Engine {
     this.inputHandler.on("space", false, e => {
       this.shoot(e);
     });
+    this.inputHandler.on("reload", false, e => {
+      this.reload(e);
+    });
 
     // webSocket for multiplayer
     this.ws = new WebSocket("ws://localhost:8080");
@@ -164,6 +167,8 @@ class Game extends Engine {
 
     // update hud
     this.hud.items.healthBar.percentage = this.players[0].healthPercentage;
+    this.hud.items.bulletDisplay.inGun = this.players[0].guns[this.players[0].selectedGun].bulletsInGun;
+    this.hud.items.bulletDisplay.outGun = this.players[0].guns[this.players[0].selectedGun].bulletsOutGun;
 
 
     // move bullets
@@ -191,11 +196,11 @@ class Game extends Engine {
 
 
     //check for collision
-    this.players.forEach(player => {
-      this.zombies.forEach(zombie => {
-        // console.log(player.collide(zombie));
-      });
-    });
+    // this.players.forEach(player => {
+    //   this.zombies.forEach(zombie => {
+    //     // console.log(player.collide(zombie));
+    //   });
+    // });
 
     // move the zombies
     this.zombies.forEach(zombie => {
@@ -233,11 +238,16 @@ class Game extends Engine {
   }
   // shoots a bullet from player 1
   shoot(e) {
-    const bullet = new Bullet(this.players[0].x, this.players[0].y, -this.camAngle + (Math.random()-0.5)*10, this.players[0]);
-    bullet.forwards(86); // offset, to make it look like it comes out of the gun
-    this.bullets.push(bullet);
+    if (this.players[0].guns[this.players[0].selectedGun].bulletsInGun > 0) {
+      const bullet = new Bullet(this.players[0].x, this.players[0].y, -this.camAngle + (Math.random()-0.5)*10, this.players[0]);
+      bullet.forwards(86); // offset, to make it look like it comes out of the gun
+      this.bullets.push(bullet);
+      this.players[0].guns[this.players[0].selectedGun].bulletsInGun--;
+    }
   }
-
+  reload(e) {
+    this.players[0].guns[this.players[0].selectedGun].reload();
+  }
 }
 
 const canvas = document.getElementById("canvas");
