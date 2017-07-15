@@ -1,0 +1,24 @@
+{
+  "name": "shootinggame",
+  "version": "1.0.0",
+  "description": "a multiplayer shooting game",
+  "main": "./server/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leon-4A6C/shootingGame.git"
+  },
+  "keywords": [
+    "game",
+    "html5",
+    "canvas"
+  ],
+  "author": "leon in 't Veld",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/leon-4A6C/shootingGame/issues"
+  },
+  "homepage": "https://github.com/leon-4A6C/shootingGame#readme"
+}
