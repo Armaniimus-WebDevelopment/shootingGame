@@ -1,5 +1,5 @@
 class Game extends Engine {
-  constructor(canvas) {
+  constructor(canvas, hash) {
     super(canvas);
     this.loaded = false;
     this.camAngle = 0;
@@ -24,6 +24,16 @@ class Game extends Engine {
     // shoot wrapper function
     this.inputHandler.on("space", false, e => {
       this.shoot(e);
+    });
+
+    // webSocket for multiplayer
+    this.ws = new WebSocket("ws://localhost:8080");
+    this.hash = hash;
+    this.ws.addEventListener("open", (event) => {
+      this.ws.send(`{"type": "hash", "hash": "${this.hash}"}`);
+    });
+    this.ws.addEventListener("message", (event) => {
+      console.log(event);
     });
   }
 
@@ -233,4 +243,4 @@ class Game extends Engine {
 const canvas = document.getElementById("canvas");
 canvas.width = document.body.clientWidth; // sets the canvas width to full body width
 canvas.height = document.body.clientHeight; // sets the canvas height to full body height
-const game = new Game(canvas);
+const game = new Game(canvas, window.location.hash.substr(1));

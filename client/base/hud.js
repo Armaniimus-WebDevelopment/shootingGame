@@ -26,9 +26,9 @@ class Hud extends HudItem{
     };
   }
   draw() {
-    this._context.clearRect(0, 0, this.size.x, this.size.y);
     for (var item in this.items) {
       if (this.items.hasOwnProperty(item)) {
+        this._context.clearRect(this.items[item].x, this.items[item].y, this.items[item].size.x, this.items[item].size.y);
         this.items[item].draw();
         this._context.drawImage(this.items[item].canvas, this.items[item].x, this.items[item].y, this.items[item].size.x, this.items[item].size.y);
       }
