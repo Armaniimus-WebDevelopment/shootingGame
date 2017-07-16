@@ -29,6 +29,10 @@ wss.on('connection', (ws, req) => {
       case "hash":
         connect(message.hash);
         break;
+      case "requestHash":
+        console.log("request!");
+        ws.send(`{"type": "hash", "hash": "${generateHash()}"}`);
+        break;
       default:
 
     }
@@ -53,4 +57,17 @@ function connect(hash) {
 
 function disconnect() {
 
+}
+
+function generateHash(len = 10) {
+  const possibleChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let hash = "";
+  for (var i = 0; i < len; i++) {
+    const random = Math.floor(Math.random()*possibleChars.length);
+    hash += possibleChars.substring(random, random+1);
+  }
+  if (games[hash]) {
+    hash = generateHash(len);
+  }
+  return hash;
 }
