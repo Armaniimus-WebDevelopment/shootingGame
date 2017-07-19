@@ -4,12 +4,50 @@ const express = require('express');
 const app = express();
 const PORT = 3000;
 
+class Vec {
+  constructor(x, y) {
+    if (x instanceof Vec) {
+      this.x = x.x;
+      this.y = x.y;
+    } else {
+      this.x = x;
+      this.y = y;
+    }
+  }
+  get len() {
+    return Math.sqrt(this.x * this.x + this.y * this.y);
+  }
+  set len(value) {
+    const fact = value / this.len;
+    this.x *= fact;
+    this.y *= fact;
+  }
+  distance(vec) {
+    return new Vec(this.x - vec.x, this.y - vec.y);
+  }
+}
+
+// zombies, players, bullets
+class GameObject {
+  constructor(x, y, rot, type, name = "unnamed") {
+    if (x instanceof Object) {
+      this.pos = new Vec(x.pos.x, x.pos.y);
+      this.rotation = x.rotation;
+      this.name = x.name || "unnamed";
+      this.type = x.type;
+    } else {
+      this.pos = new Vec(x, y);
+      this.rotation = rot;
+      this.name = name;
+      this.type = type;
+    }
+  }
+}
+
 class Game {
   constructor(hash) {
     this.hash = hash;
-    this.players = [];
-    this.zombies = [];
-    this.bullets = [];
+    this.gameObjects = [];
   }
 }
 
