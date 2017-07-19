@@ -41,14 +41,31 @@ class Game extends Engine {
     });
     this.ws.addEventListener("message", (event) => {
       const data = JSON.parse(event.data);
-      console.log(data);
       switch (data.type) {
         case "hash":
           window.location.hash = data.hash;
           this.hash = data.hash;
           break;
-        default:
+        case "newPlayer":
 
+          break;
+        case "newBullet":
+
+          break;
+        case "newZombie":
+
+          break;
+        case "playerUpdate":
+
+          break;
+        case "bulletUpdate":
+
+          break;
+        case "zombieUpdate":
+
+          break;
+        default:
+          console.log(data);
       }
     });
   }
@@ -214,6 +231,21 @@ class Game extends Engine {
     //     // console.log(player.collide(zombie));
     //   });
     // });
+
+    // zombies attack!
+    this.players.forEach(player => {
+      this.zombies.forEach(zombie => {
+        const dist = zombie.pos.distance(player.pos);
+        const minDist = 50;
+        if (dist.x < minDist && dist.y < minDist && dist.x > -minDist && dist.y > -minDist) {
+          // attack(do damage)
+          player.health -= 5 * dt;
+          if (player.health <= 0) {
+            // TODO: game over, respawn next round at lvl 0 again(when I add levels)
+          }
+        }
+      });
+    });
 
     // move the zombies
     this.zombies.forEach(zombie => {

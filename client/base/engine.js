@@ -4,6 +4,7 @@ class Engine {
     this._context = this._canvas.getContext("2d");
     this._context.imageSmoothingEnabled = false;
     this.inputHandler = new InputHandler();
+    this.state = 0;
 
     this._accumulator = 0;
     this.step = 1/120;
